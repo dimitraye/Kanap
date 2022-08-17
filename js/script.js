@@ -10,6 +10,7 @@ const DOMAIN = '/api/products';
 
 /* DECLARATION DES FONCTIONS */
 
+//Récupère et affiche les produits
 async function dislayProducts() {
   let jsonListProduct = await getProducts();
   generateHtmlForProducts(jsonListProduct);
