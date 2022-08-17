@@ -1,6 +1,7 @@
 import { Product } from './product.class.js';
 import { getProducts, removeProduct, removeAllProducts } from './productManager.js';
 
+
 /* ------------ GESTION DE LA PAGE PANIER ------------ */
 
 /* DECLARATION DES CONSTANTES */
@@ -13,36 +14,34 @@ const DOMAIN = '/api/products';
 /* DECLARATION DES VARIABLES */
 
 let productLines = [];//contiens les informations de la commande + les détails du produit
-//console.log('orderLines', orderLines);
 let cartItems = document.getElementById('cart__items');
 let content = "";
 let totalPrice = 0;
 let totalQuantity = 0;
 let spanTotalQuantity = document.getElementById('totalQuantity');
 let spanTotalPrice = document.getElementById('totalPrice');
-/* enregistrement de la valeur de la balise ayant pour ID firstName*/
+// récupère la balise ayant pour ID firstName
 let inputFirstName = document.getElementById('firstName');
-/* enregistrement de la valeur de la balise ayant pour ID lastName*/
+// récupère la balise ayant pour ID lastName
 let inputLastName = document.getElementById('lastName');
-/* enregistrement de la valeur de la balise ayant pour ID address*/
+// récupère la balise ayant pour ID address
 let inputAddress = document.getElementById('address');
-/* enregistrement de la valeur de la balise ayant pour ID city*/
+// récupère la balise ayant pour ID city
 let inputCity = document.getElementById('city');
-/* enregistrement de la valeur de la balise ayant pour ID email*/
+// récupère la balise ayant pour ID email
 let inputEmail = document.getElementById('email');
+// récupère la balise ayant pour class itemQuantity
 let itemQuantities = document.getElementsByClassName('itemQuantity');
 //objet regroupant les infos  de contact du formulaire
 let contact = {};
 
 /*---------------------------------------------------------------------------------------- */
 
-
-
 /* APPEL DES FONCTIONS */
 
 //Appel de la fonction listProd + autre action suite à l'appel
 listProds().then(function () {
-  setTimeout(addProductsOnPage, 2000);
+  setTimeout(manageProductsOnPage, 2000);
 });
 
 //Gère la validation du formulaire
@@ -50,55 +49,46 @@ validationForm();
 
 /*---------------------------------------------------------------------------------------- */
 
-
-
-
-
 /* DECLARATION DES FONCTIONS */
 
 //Créé une liste de tous les produits dans le panier
 async function listProds() {
   //Récupérer le panier (stocké dans le localStorage) : la liste de produits
   let orderLines = getProducts();
-  for (let line of orderLines) {
-    //console.log('line', line)
-    //créé un ligne de commande et l'ajoute à une liste de commande 
-    let product = await getProd(line);
+  console.log("orderlines", orderLines);
+  for (let orderLine of orderLines) {
+
+    let jsonProduct = await getProduct(orderLine.id);
+    let product = new Product(jsonProduct);
+
+    //création d'une ligne de commande
+    let productLineForHtml = getProductDetails(product, orderLine);
+    //génération du HTML pour le produit
+    generateProductHtmlContent(productLineForHtml);
+
+    //Incrémente le nombre total de produit
+    totalQuantity += parseInt(orderLine.quantity);
+
+    //Incrémente le prix total du panier
+    totalPrice += (parseFloat(product.price) * orderLine.quantity);
   };
-  //console.log('productLines in end of productLines', productLines);
 }
 
-//créé un ligne de commande et l'ajoute à une liste de commande 
-async function getProd(line) {
-  let product;
-  fetch(HOST + DOMAIN + '/' + line.id)
-    .then(res => res.json())
-    .then(jsonProduct => {
-      //console.log("jsonProduct : ", jsonProduct);
-      //récupération du product en format JSON et conversion en objet product
-      product = new Product(jsonProduct);
-      //console.log("product : ", product);
-      //création d'une ligne de commande
-      let productLine = {
-        prod: product,
-        id: line.id,
-        color: line.color,
-        qty: parseInt(line.quantity)
-      };
-      //ajout du produit à la liste de produits
-      productLines.push(productLine);
-      //génération du HTML pour le produit
-      generateProductHtmlContent(productLine);
-      //Incrémente le nombre total de produit
-      totalQuantity += parseInt(line.quantity);
-      //Incrémente le prix total du panier
-      totalPrice += (parseFloat(product.price) * line.quantity);
+function manageProductsOnPage() {
+  //Gestion màj quantité total et prix total lors de la màj  quantité d'un produit
+  majTotalPriceAndTotalQuantity();
+  //gestion de la suppression d'un produit sur la page lorsqu'on click sur supprimer
+  deleteProductOnPage();
+}
 
-    })
-    .catch(function (err) {
-      console.log("Une erreur est survenue.", err); /* indique en détail l'erreur */
-    });
-  return product;
+//Génère un objet contenant les détails nécessaires à l'affichage d'un produit sur la page
+function getProductDetails(product, orderLine) {
+  return {
+    prod: product,
+    id: orderLine.id,
+    color: orderLine.color,
+    qty: parseInt(orderLine.quantity)
+  };
 }
 
 //validation du formulaire
@@ -204,7 +194,7 @@ async function sendForm(data) {
 //fonction générant le code HTML pour inserer un nouvel article contenant le produit sur la page
 async function generateProductHtmlContent(line) {
   console.log('line in displayProductsOnCart ', line);
-  content += `
+  cartItems.innerHTML += `
         <article class="cart__item" data-id="${line.id}" data-color="${line.color}">
                 <div class="cart__item__img">
                   <img src="${line.prod.imageUrl}" alt="${line.prod.altTxt}">
@@ -231,15 +221,6 @@ async function generateProductHtmlContent(line) {
         `;
 }
 
-
-function addProductsOnPage() {
-
-  cartItems.innerHTML += content;
-  console.log('cartItems', cartItems);
-  //màj quantité total et prix total lors de la màj  quantité d'un produit
-  majTotalPriceAndTotalQuantity();
-  deleteProductOnPage();
-}
 
 //gère affichage et maj de la quantité totale et du prix total
 function majTotalPriceAndTotalQuantity() {
@@ -301,16 +282,12 @@ function majTotalPriceAndTotalQuantity() {
           console.log('oldQuantity', oldQuantity);
 
         })
-
         .catch(function (err) {
           console.log("Une erreur est survenue.", err); /* indique en détail l'erreur */
         });
-
-
-
     })
   }
-  }
+}
 
 
 //gestion de la suppression d'un produit sur la page lorsqu'on click sur supprimer
@@ -373,11 +350,7 @@ function deleteProductOnPage() {
 
           //supprimer le produit du local storage 
           removeProduct(id, color);
-          //xconsole log de la variable
-          //console.log('deleteItem', deleteItem);
-          //console.log('deleteItems', deleteItems);
-          //console.log('quantity', quantity);
-          //console.log('price', price);
+
 
         })
         .catch(function (err) {
@@ -387,4 +360,18 @@ function deleteProductOnPage() {
   }
 }
 
-/*---------------------------------------------------------------------------------------- */
+async function getProduct(id) {
+  try {
+    let response = await fetch(HOST + DOMAIN + "/" + id);
+    if (response.ok) {
+      let data = await response.json();
+      console.log('product :', data);
+      return data;
+    } else {
+      console.error('Retour du server :', response.status);
+    }
+  } catch (error) {
+    console.log('Erreur dans getProduct() :', error);
+  }
+
+}

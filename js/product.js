@@ -75,7 +75,6 @@ buttonCart.addEventListener('click', function (ev) {
 
 /* DECLARATION DES FONCTIONS */
 
-/* display product */
 function addProductContent(product) {
     document.querySelector(".item__img").innerHTML =
         `<img src="${product.imageUrl}" alt="${product.altTxt}"></img>`;
