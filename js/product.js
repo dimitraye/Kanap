@@ -1,18 +1,22 @@
 import { Product } from './product.class.js';
-import {  addProductToCart } from './productManager.js';
-//Faire une alerte pour certifier l'ajout de produit au panier
+import { addProductToCart } from './productManager.js';
 
+/* DECLARATION DES CONSTANTES */
 
 console.log("in product js for one product");
+const HOST = 'http://localhost:3000';
+const DOMAIN = '/api/products';
 const params = new Proxy(new URLSearchParams(window.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
 });
 
+/*---------------------------------------------------------------------------------------- */
+
+
+/* DECLARATION DES VARIABLES */
 
 let id = params.id;
 let colorSelect = document.getElementById("colors");
-let quantityInput = document.getElementById("quantity");
-
 /* enregistrement de la valeur du select*/
 let selectColors = document.getElementById("colors");
 /* enregistrement de la valeur quantity*/
@@ -21,31 +25,27 @@ let inputQuantity = document.getElementById("quantity");
 let buttonCart = document.getElementById("addToCart");
 
 
-/* Récupérer les canapé dans consollog */
-fetch("http://localhost:3000/api/products/" + id)
-    .then(res => res.json())
-    .then(jsonProduct => {
-        console.log("jsonProduct : ", jsonProduct);
-        let product = new Product(jsonProduct);
-        console.log("product : ", product);
-        addProductContent(product);
-    })
-
-    .catch(function (err) {
-        console.log("Une erreur est survenue.", err); /* indique en détail l'erreur */
-    });
+/*---------------------------------------------------------------------------------------- */
 
 
+/* APPEL DES FONCTIONS */
+dislayProduct();
+
+
+/*---------------------------------------------------------------------------------------- */
+
+
+/* DECLARATION DES LISTENERS */
 
 //Ecoute s'il y a eu un changement de la valeur de couleur
 selectColors.addEventListener('change', function (ev) {
     console.log('selectColors:', ev.target.value);
-    checkColorAndQuantity(ev.target.value , inputQuantity.value);
+    checkColorAndQuantity(ev.target.value, inputQuantity.value);
 });
 //Ecoute s'il y a eu un changement de la valeur de la quantité
 inputQuantity.addEventListener('change', function (ev) {
     console.log('inputQuantity:', ev.target.value);
-    checkColorAndQuantity(selectColors.value , ev.target.value);
+    checkColorAndQuantity(selectColors.value, ev.target.value);
 });
 
 
@@ -69,8 +69,11 @@ buttonCart.addEventListener('click', function (ev) {
     }
 
 });
-/* condition*/
 
+/*---------------------------------------------------------------------------------------- */
+
+
+/* DECLARATION DES FONCTIONS */
 
 /* display product */
 function addProductContent(product) {
@@ -91,19 +94,19 @@ function addProductContent(product) {
 };
 
 /* true false quantity */
-function checkQuantity(quantity){
+function checkQuantity(quantity) {
     return quantity > 1;
 }
 
 /* true false color */
-function checkColor(color){
+function checkColor(color) {
     return color != "";
 }
 
 /* foction quantity + color*/
-function checkColorAndQuantity(color , quantity){
-    if ( checkQuantity(quantity) || checkColor(color)) {
-        
+function checkColorAndQuantity(color, quantity) {
+    if (checkQuantity(quantity) || checkColor(color)) {
+
         buttonCart.removeAttribute('disabled');
     }
     else {
@@ -111,3 +114,28 @@ function checkColorAndQuantity(color , quantity){
         buttonCart.setAttribute('disabled', "");
     }
 }
+
+//récupère le product dans l'API
+async function getProduct() {
+    try {
+        let response = await fetch(HOST + DOMAIN +'/'+ id);
+        if (response.ok) {
+            let data = await response.json();
+            console.log('product :', data);
+            return data;
+        } else {
+            console.error('Retour du server :', response.status);
+        }
+    } catch (error) {
+        console.log('Erreur dans getProduct() :', error);
+    }
+
+}
+
+//Récupère et affiche le produit
+async function dislayProduct() {
+    let jsonProduct = await getProduct();
+    let product = new Product(jsonProduct);
+    addProductContent(product);
+}
+
