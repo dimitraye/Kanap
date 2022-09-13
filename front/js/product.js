@@ -94,7 +94,7 @@ function addProductContent(product) {
 
 /* true false quantity */
 function checkQuantity(quantity) {
-    return quantity > 1;
+    return quantity > 0;
 }
 
 /* true false color */
