@@ -128,6 +128,7 @@ async function getProduct() {
 async function dislayProduct() {
     let jsonProduct = await getProduct();
     let product = new Product(jsonProduct);
+    document.getElementsByTagName("title")[0].innerHTML = product.name;
     addProductContent(product);
 }
 
