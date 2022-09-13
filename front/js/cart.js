@@ -179,6 +179,8 @@ async function sendForm(data) {
     })
     //s'il y a une erreur par rapport à l'envoie du formulaire
     .catch(function (err) {
+      alert("sendForm : ERROR : Impossible d'envoyer le formulaire", err);
+
     });
 }
 
@@ -261,6 +263,8 @@ function majTotalPriceAndTotalQuantity() {
 
         })
         .catch(function (err) {
+          alert("majTotalPriceAndTotalQuantity : ERROR : Impossible de récupérer le produit");
+
         });
     })
   }
@@ -282,7 +286,7 @@ function deleteProductOnPage() {
       let color = cartItem.dataset.color;
     
 
-      //faire une requète à l'API pour récuperer un objet en particulier grace a son id
+      //faire une requète à l'API pour récuperer un produit en particulier grace a son id
       fetch(HOST + DOMAIN + '/' + id)
         .then(res => res.json())
         .then(jsonProduct => {
@@ -317,6 +321,7 @@ function deleteProductOnPage() {
 
         })
         .catch(function (err) {
+          alert("deleteProductOnPage : ERROR : Impossible de récupérer le produit");
         });
     });
   }
@@ -332,6 +337,8 @@ async function getProduct(id) {
       console.error('Retour du server :', response.status);
     }
   } catch (error) {
+    alert("getProduct : ERROR : Impossible de récupérer le produit");
+
   }
 
 }

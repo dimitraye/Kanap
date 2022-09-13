@@ -118,6 +118,8 @@ async function getProduct() {
             console.error('Retour du server :', response.status);
         }
     } catch (error) {
+        alert("getProduct : ERROR : Impossible de récupérer le produit");
+
     }
 
 }

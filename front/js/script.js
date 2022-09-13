@@ -10,13 +10,6 @@ const DOMAIN = '/api/products';
 
 /* DECLARATION DES FONCTIONS */
 
-//Récupère et affiche les produits
-async function dislayProducts() {
-  let jsonListProduct = await getProducts();
-  generateHtmlForProducts(jsonListProduct);
- 
-}
-
 //récupère les products dans l'API
 async function getProducts() {
   try {
@@ -28,13 +21,15 @@ async function getProducts() {
       console.error('Retour du server :', response.status);
     }
   } catch (error) {
+    alert("getProducts : ERROR : Impossible de récupérer les produits");
   }
 
 }
 
 
-//fonction qui génère le code HTML pour afficher les produits sur la page
-function generateHtmlForProducts(jsonListProduct) {
+//fonction qui génère le code HTML pour afficher les produits sur la page et les affiche
+async function generateHtmlForProducts() {
+  let jsonListProduct = await getProducts() ;
   for (let jsonProduct of jsonListProduct) {
     //créé un objet produit à partir d'un produit au format JSON
     let product = new Product(jsonProduct);
@@ -47,14 +42,13 @@ function generateHtmlForProducts(jsonListProduct) {
           </a> `;
   }
 
-}
+} 
 
 /*---------------------------------------------------------------------------------------- */
 
 
 /* APPEL DES FONCTIONS */
-dislayProducts();
-
+generateHtmlForProducts()
 
 /*---------------------------------------------------------------------------------------- */
 
