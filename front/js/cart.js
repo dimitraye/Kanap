@@ -251,6 +251,10 @@ function majTotalPriceAndTotalQuantity() {
           let newQuantity = parseInt(ev.target.value);
           //récup de l'ancienne quantité
           let oldQuantity = parseInt(ev.target.getAttribute('oldValue'));
+          //vérifie si la nouvelle quantité est supétieur à 100. si oui, la quantité garde l'ancienne valeur
+          newQuantity = (newQuantity > 100 || newQuantity < 1 ) ? oldQuantity : newQuantity;
+          //màj de l'input quantity
+          ev.target.value = newQuantity;
           //calcul de l'ancien sous total
           let oldSubTotal = oldQuantity * price;
           //calcul du nouveau sous total
