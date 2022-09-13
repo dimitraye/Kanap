@@ -1,6 +1,6 @@
 export class Product{
     constructor(jsonProduct){
-        jsonProduct && Object.assign(this, jsonProduct);
+        jsonProduct && Object.assign(this, jsonProduct);//crée un objet et lui attribut toutes les valeurs de jsonProduct
     }
 
     trunc(length) { 

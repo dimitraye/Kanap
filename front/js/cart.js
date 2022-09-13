@@ -51,7 +51,7 @@ validationForm();
 
 /* DECLARATION DES FONCTIONS */
 
-//Créé une liste de tous les produits dans le panier
+//Génère la liste de produit sur la page à partir des produits stockés ddans le local storage
 async function listProds() {
   //Récupérer le panier (stocké dans le localStorage) : la liste de produits
   let orderLines = getProducts();
@@ -254,7 +254,6 @@ function majTotalPriceAndTotalQuantity() {
           let newQuantity = parseInt(ev.target.value);
           //récup de l'ancienne quantité
           let oldQuantity = parseInt(ev.target.getAttribute('oldValue'));
-
           //calcul de l'ancien sous total
           let oldSubTotal = oldQuantity * price;
           //calcul du nouveau sous total
@@ -274,7 +273,6 @@ function majTotalPriceAndTotalQuantity() {
           console.log('newQuantity', newQuantity);
           //maj de l'ancienne quantité dans l'attribut oldValue
           ev.target.setAttribute('oldValue', newQuantity);
-
           console.log('cartItemContent', cartItemContent);
           console.log('priceContent', priceContent);
           console.log('price', price);
@@ -326,31 +324,27 @@ function deleteProductOnPage() {
           //console.log('subTotal', subTotal);
           //recuperer le champs de quantityTotal
           let quantityTotal = spanTotalQuantity.textContent;
+
           //console.log('quantityTotal', quantityTotal);
           //maj de la quantitéTotal : soustraire sa quantitéTotal à quantitéTotal de tous les articles
           quantityTotal -= quantity;
           //console.log('quantityTotal', quantityTotal);
-
           //enlever le sousTotal à totPrice
           totalPrice -= subTotal;
           //console.log('totalPrice', totalPrice);
-
           //mettre le prix actualisé  dans la balise spanTotalPrice
           spanTotalPrice.textContent = totalPrice;
           //console.log('spanTotalPrice', spanTotalPrice);
           //mettre la quantité actualisé  dans la balise spanTotalQuantity
           spanTotalQuantity.textContent = quantityTotal;
           //console.log('spanTotalQuantity', spanTotalQuantity);
-
           //récuperer la balise article contenant le produit
           let article = ev.target.parentNode.parentNode.parentNode.parentNode;
           //console.log('article', article);
           //supprimer l'affichage du produit
           cartItems.removeChild(article);
-
           //supprimer le produit du local storage 
           removeProduct(id, color);
-
 
         })
         .catch(function (err) {

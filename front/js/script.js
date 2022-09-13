@@ -14,6 +14,7 @@ const DOMAIN = '/api/products';
 async function dislayProducts() {
   let jsonListProduct = await getProducts();
   generateHtmlForProducts(jsonListProduct);
+ 
 }
 
 //récupère les products dans l'API
@@ -32,6 +33,7 @@ async function getProducts() {
   }
 
 }
+
 
 //fonction qui génère le code HTML pour afficher les produits sur la page
 function generateHtmlForProducts(jsonListProduct) {
