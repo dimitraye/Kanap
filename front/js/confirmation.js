@@ -8,7 +8,6 @@ let orderId = params.orderId;
 
 //recup span qui doit contenir orderId
 let spanOrderId = document.getElementById('orderId');
-console.log('spanOrderId',spanOrderId);
 
 //inserer l'odrerId dans le span
 spanOrderId.textContent = orderId;

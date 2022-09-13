@@ -23,13 +23,11 @@ async function getProducts() {
     let response = await fetch(HOST + DOMAIN);
     if (response.ok) {
       let data = await response.json();
-      console.log('products :', data);
       return data;
     } else {
       console.error('Retour du server :', response.status);
     }
   } catch (error) {
-    console.log('Erreur dans getProducts() :', error);
   }
 
 }
@@ -40,7 +38,6 @@ function generateHtmlForProducts(jsonListProduct) {
   for (let jsonProduct of jsonListProduct) {
     //créé un objet produit à partir d'un produit au format JSON
     let product = new Product(jsonProduct);
-    console.log("Produit : ", product);
     document.getElementById("items").innerHTML += ` <a href="./product.html?id=${product._id}">
             <article>
               <img src="${product.imageUrl}" alt="${product.altTxt}">
