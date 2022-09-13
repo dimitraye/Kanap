@@ -259,7 +259,7 @@ function majTotalPriceAndTotalQuantity() {
 
           //maj de l'ancienne quantité dans l'attribut oldValue
           ev.target.setAttribute('oldValue', newQuantity);
-          
+
 
         })
         .catch(function (err) {
@@ -273,10 +273,15 @@ function majTotalPriceAndTotalQuantity() {
 
 //gestion de la suppression d'un produit sur la page lorsqu'on click sur supprimer
 function deleteProductOnPage() {
+
   //Ajout d'un listener sur tous es deleteItems pour gerer la supppression d'un produit en partiuculier
   let deleteItems = document.getElementsByClassName('deleteItem');
   for (let deleteItem of deleteItems) {
     deleteItem.addEventListener('click', function (ev) {
+      let choice = confirm("Êtes-vous sûr de vouloir supprimer cet article ?");
+      if (!choice) {
+        return;
+      }
 
       //recup container contenant l'id
       let cartItem = ev.target.parentNode.parentNode.parentNode.parentNode;
@@ -284,7 +289,7 @@ function deleteProductOnPage() {
       let id = cartItem.dataset.id;
       //récuperer la couleur se trouvant dans le container ayant pour classe cartItem
       let color = cartItem.dataset.color;
-    
+
 
       //faire une requète à l'API pour récuperer un produit en particulier grace a son id
       fetch(HOST + DOMAIN + '/' + id)
@@ -318,6 +323,7 @@ function deleteProductOnPage() {
           cartItems.removeChild(article);
           //supprimer le produit du local storage 
           removeProduct(id, color);
+          alert("Votre produit à bien été supprimé.");
 
         })
         .catch(function (err) {
