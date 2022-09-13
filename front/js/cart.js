@@ -55,7 +55,6 @@ validationForm();
 async function listProds() {
   //Récupérer le panier (stocké dans le localStorage) : la liste de produits
   let orderLines = getProducts();
-  console.log("orderlines", orderLines);
   for (let orderLine of orderLines) {
 
     let jsonProduct = await getProduct(orderLine.id);
@@ -100,13 +99,10 @@ function validationForm() {
   //pour chacun des champs séléctionnés auparavant, vérifier s'il y a eu un changement  
   for (let input of inputs) {
     input.addEventListener('change', function () {
-      console.log('input', input);
       let errorMessageContainer = input.nextElementSibling;
-      console.log('errorMessageContainer', errorMessageContainer);
       //s'il y a un changement, vérifier la validité du changement apporté dans le champs /sinon message d'erreur
       //exemple : le champs nom ne prends pas de chiffres
       if (!input.checkValidity()) {
-        console.log("non valide : ", input.validationMessage);
         //insert le message d'erreur dans le Paragraphe prévu à cet effet 
         errorMessageContainer.innerHTML = input.validationMessage;
       } else {
@@ -144,12 +140,10 @@ function validationForm() {
       let articles = document.getElementsByClassName('cart__item');
       for (let article of articles) {
         productIds.push(article.dataset.id);
-        console.log('productIds', productIds);
       }
 
       //création de l'objet contenant les données pour valider le formulaire
       let data = { contact: contact, products: productIds };
-      console.log('data', data);
       //envoi les données du formulaire à API Order
       sendForm(data);
 
@@ -178,7 +172,6 @@ async function sendForm(data) {
       let orderId = value.orderId;
       // efface le panier du localStorage
       removeAllProducts();
-      //console.log("orderid ", orderId);
       alert("Commande passée avec succès");
       //redirige vers la page confirmation
       window.location.href = "./confirmation.html?orderId=" + orderId;
@@ -186,14 +179,12 @@ async function sendForm(data) {
     })
     //s'il y a une erreur par rapport à l'envoie du formulaire
     .catch(function (err) {
-      console.log("Une erreur est survenue. sendForm", err); /* indique en détail l'erreur */
     });
 }
 
 
 //fonction générant le code HTML pour inserer un nouvel article contenant le produit sur la page
 async function generateProductHtmlContent(line) {
-  console.log('line in displayProductsOnCart ', line);
   cartItems.innerHTML += `
         <article class="cart__item" data-id="${line.id}" data-color="${line.color}">
                 <div class="cart__item__img">
@@ -234,17 +225,13 @@ function majTotalPriceAndTotalQuantity() {
     itemQuantity.addEventListener('change', function (ev) {
       //récupération de la balise article contenant l'id
       let article = ev.target.parentNode.parentNode.parentNode.parentNode;
-      console.log('article', article);
       //récup l'id
       let id = article.dataset.id;
-      console.log('id', id);
       //récup product via l'API pour récup le prix
       fetch(HOST + DOMAIN + '/' + id)
         .then(res => res.json())
         .then(jsonProduct => {
-          console.log("jsonProduct : ", jsonProduct);
           let product = new Product(jsonProduct);
-          console.log("product : ", product);
 
           //récup balise contenant le prix
           let cartItemContent = ev.target.parentNode.parentNode.parentNode;
@@ -259,10 +246,8 @@ function majTotalPriceAndTotalQuantity() {
           //calcul du nouveau sous total
           let newSubTotal = newQuantity * price;
           let quantityTotal = parseInt(spanTotalQuantity.textContent);
-          console.log('quantityTotal', quantityTotal);
           //maj de  la variable quantité totale
           quantityTotal = quantityTotal - oldQuantity + newQuantity;
-          console.log('quantityTotal', quantityTotal);
           //maj du span contenant quantité totale
           spanTotalQuantity.textContent = quantityTotal;
           //maj de la variable prixTotal
@@ -270,18 +255,12 @@ function majTotalPriceAndTotalQuantity() {
           //maj du span contenant prix totale
           spanTotalPrice.textContent = totalPrice;
 
-          console.log('newQuantity', newQuantity);
           //maj de l'ancienne quantité dans l'attribut oldValue
           ev.target.setAttribute('oldValue', newQuantity);
-          console.log('cartItemContent', cartItemContent);
-          console.log('priceContent', priceContent);
-          console.log('price', price);
-          console.log('newQuantity', newQuantity);
-          console.log('oldQuantity', oldQuantity);
+          
 
         })
         .catch(function (err) {
-          console.log("Une erreur est survenue.", err); /* indique en détail l'erreur */
         });
     })
   }
@@ -301,16 +280,13 @@ function deleteProductOnPage() {
       let id = cartItem.dataset.id;
       //récuperer la couleur se trouvant dans le container ayant pour classe cartItem
       let color = cartItem.dataset.color;
-      console.log('id', id);
-      console.log('color', color);
+    
 
       //faire une requète à l'API pour récuperer un objet en particulier grace a son id
       fetch(HOST + DOMAIN + '/' + id)
         .then(res => res.json())
         .then(jsonProduct => {
-          console.log("jsonProduct : ", jsonProduct);
           let product = new Product(jsonProduct);
-          console.log("product : ", product);
 
           let price = product.price;
           //récuperer container ayant pour classe cartItemContentSetting 
@@ -321,26 +297,19 @@ function deleteProductOnPage() {
           let quantity = itemQuantity.value;
           //calcule du sousTotal (prix total  = d'un article * la quantité souhaité)
           let subTotal = quantity * price;
-          //console.log('subTotal', subTotal);
           //recuperer le champs de quantityTotal
           let quantityTotal = spanTotalQuantity.textContent;
 
-          //console.log('quantityTotal', quantityTotal);
           //maj de la quantitéTotal : soustraire sa quantitéTotal à quantitéTotal de tous les articles
           quantityTotal -= quantity;
-          //console.log('quantityTotal', quantityTotal);
           //enlever le sousTotal à totPrice
           totalPrice -= subTotal;
-          //console.log('totalPrice', totalPrice);
           //mettre le prix actualisé  dans la balise spanTotalPrice
           spanTotalPrice.textContent = totalPrice;
-          //console.log('spanTotalPrice', spanTotalPrice);
           //mettre la quantité actualisé  dans la balise spanTotalQuantity
           spanTotalQuantity.textContent = quantityTotal;
-          //console.log('spanTotalQuantity', spanTotalQuantity);
           //récuperer la balise article contenant le produit
           let article = ev.target.parentNode.parentNode.parentNode.parentNode;
-          //console.log('article', article);
           //supprimer l'affichage du produit
           cartItems.removeChild(article);
           //supprimer le produit du local storage 
@@ -348,7 +317,6 @@ function deleteProductOnPage() {
 
         })
         .catch(function (err) {
-          console.log("Une erreur est survenue.", err); /* indique en détail l'erreur */
         });
     });
   }
@@ -359,13 +327,11 @@ async function getProduct(id) {
     let response = await fetch(HOST + DOMAIN + "/" + id);
     if (response.ok) {
       let data = await response.json();
-      console.log('product :', data);
       return data;
     } else {
       console.error('Retour du server :', response.status);
     }
   } catch (error) {
-    console.log('Erreur dans getProduct() :', error);
   }
 
 }

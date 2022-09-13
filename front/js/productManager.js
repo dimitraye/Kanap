@@ -24,13 +24,10 @@ const LIST_PRODUCTS = "listProducts";
 // ajout d'un produit dans le panier (comparaison/ajout/modification) 
 export function addProductToCart(id, color, quantity) {
     quantity = parseInt(quantity);
-    console.log('addProductCart called');
     //récuperer la liste Panier
     let listProducts = getProducts();
-    console.log('listProduct ', listProducts);
     //parcourrid le panier pour trouver si l'product existe déja (id/couleur)
     let existingProduct = getExistingProduct(id, color);
-    console.log('existingProduct', existingProduct);
 
 
     //Si le produit existe ajouter la nouvelle quantité à celle déja existante
@@ -42,7 +39,6 @@ export function addProductToCart(id, color, quantity) {
     //ajout du produit dans la liste
     listProducts.push({ id: id, color: [color], quantity: quantity });
 
-    console.log('listProducts', listProducts);
     //savegarde du panier dans le local storage
     saveProduct(listProducts);
 }

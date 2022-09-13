@@ -39,12 +39,10 @@ dislayProduct();
 
 //Ecoute s'il y a eu un changement de la valeur de couleur
 selectColors.addEventListener('change', function (ev) {
-    console.log('selectColors:', ev.target.value);
     checkColorAndQuantity(ev.target.value, inputQuantity.value);
 });
 //Ecoute s'il y a eu un changement de la valeur de la quantité
 inputQuantity.addEventListener('change', function (ev) {
-    console.log('inputQuantity:', ev.target.value);
     checkColorAndQuantity(selectColors.value, ev.target.value);
 });
 
@@ -56,10 +54,6 @@ inputQuantity.addEventListener('change', function (ev) {
 buttonCart.addEventListener('click', function (ev) {
     let color = selectColors.value;
     let quantity = inputQuantity.value;
-    console.log('buttonCart:', ev.target);
-    console.log('id :', id);
-    console.log('color :', color);
-    console.log('quantity :', quantity);
     if (checkQuantity(quantity) && checkColor(color)) {
         addProductToCart(id, color, quantity);
         alert("Produit ajouté au panier");
@@ -86,7 +80,6 @@ function addProductContent(product) {
         product.description;
 
     for (let color of product.colors) {
-        console.log("color: ", color);
         colorSelect.innerHTML +=
             `<option value="${color}">${color}</option>`;
     }
@@ -120,13 +113,11 @@ async function getProduct() {
         let response = await fetch(HOST + DOMAIN +'/'+ id);
         if (response.ok) {
             let data = await response.json();
-            console.log('product :', data);
             return data;
         } else {
             console.error('Retour du server :', response.status);
         }
     } catch (error) {
-        console.log('Erreur dans getProduct() :', error);
     }
 
 }
