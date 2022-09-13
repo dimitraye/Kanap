@@ -138,6 +138,10 @@ function validationForm() {
       let productIds = [];
       //récupère la balise qui a la classe cart_item contenant les id
       let articles = document.getElementsByClassName('cart__item');
+      if (articles.length < 1){
+        alert("Merci d'ajouter au moins un article dans le panier avant de valider votre commande.");
+        return ;
+      }
       for (let article of articles) {
         productIds.push(article.dataset.id);
       }
