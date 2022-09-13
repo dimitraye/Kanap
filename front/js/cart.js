@@ -55,6 +55,10 @@ validationForm();
 async function listProds() {
   //Récupérer le panier (stocké dans le localStorage) : la liste de produits
   let orderLines = getProducts();
+  if (orderLines.length < 1){
+    let message = "Il n'y a aucun produit dans le panier  actuellement.";
+    cartItems.innerHTML = message;
+  }
   for (let orderLine of orderLines) {
 
     let jsonProduct = await getProduct(orderLine.id);
