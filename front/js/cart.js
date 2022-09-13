@@ -56,8 +56,11 @@ async function listProds() {
   //Récupérer le panier (stocké dans le localStorage) : la liste de produits
   let orderLines = getProducts();
   if (orderLines.length < 1){
-    let message = "Il n'y a aucun produit dans le panier  actuellement.";
-    cartItems.innerHTML = message;
+    let message = document.createTextNode("Il n'y a aucun produit dans le panier  actuellement");
+    let h2 = document.createElement("h2");
+    h2.classList.add("center");
+    h2.appendChild(message);
+    document.querySelector("h1").after(h2);
   }
   for (let orderLine of orderLines) {
 
