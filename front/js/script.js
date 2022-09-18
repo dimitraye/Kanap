@@ -21,7 +21,7 @@ async function getProducts() {
       console.error('Retour du server :', response.status);
     }
   } catch (error) {
-    alert("getProducts : ERROR : Impossible de récupérer les produits");
+    alert("Impossible de récupérer les produits");
   }
 
 }
